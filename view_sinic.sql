@@ -43,7 +43,7 @@ BEGIN
                 -- gc_interesado atributos NOT NULL
                 gi.t_id AS interesado_id,
                 gi.tipo_documento,
-                gi.sexo,
+                gst.ilicode as sexotipo,
                 gi.comienzo_vida_util_version AS interesado_cvu_version,
                 gi.espacio_de_nombres AS interesado_espacio_nombres,
                 gi.local_id AS interesado_local_id,
@@ -63,7 +63,7 @@ BEGIN
                 
                 -- gc_derechocatastral atributos NOT NULL
                 gdc.t_id AS derecho_id,
-                gdc.tipo AS derecho_tipo,
+                gdct.ilicode AS derecho_tipo,
                 gdc.comienzo_vida_util_version AS derecho_cvu_version,
                 gdc.espacio_de_nombres AS derecho_espacio_nombres,
                 gdc.local_id AS derecho_local_id,
@@ -90,7 +90,10 @@ BEGIN
             LEFT JOIN %s.gc_predio_tramitecatastral gptc ON gp.t_id = gptc.cr_predio
             LEFT JOIN %s.gc_tramitecatastral gtc ON gptc.cr_tramite_catastral = gtc.t_id
             LEFT JOIN %s.gc_derechocatastral gdc ON gp.t_id = gdc.unidad
+            left join %s.gc_derechocatastraltipo gdct on gdc.tipo = gdct.t_id
+            
             LEFT JOIN %s.gc_interesado gi ON gdc.interesado_gc_interesado = gi.t_id
+            LEFT JOIN %s.gc_sexotipo gst ON gi.sexo = gst.t_id
             LEFT JOIN %s.col_unidadfuente cuf ON gp.t_id = cuf.unidad
             LEFT JOIN %s.col_responsablefuente crf ON gi.t_id = crf.interesado_gc_interesado
             LEFT JOIN %s.col_rrrfuente crrrf ON gdc.t_id = crrrf.rrr_gc_derechocatastral
@@ -652,6 +655,3 @@ BEGIN
 END;
 $$;
 
-
-
-select * from cun25489.vw_mutacion_de_primera
